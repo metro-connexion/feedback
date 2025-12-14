@@ -1,0 +1,55 @@
+name: ci
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - ready_for_review
+      - synchronize
+      - reopened
+  merge_group:
+  push:
+    branches:
+      - main
+
+jobs:
+  api-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./api
+
+      - name: Run eslint
+        run: npm run lint
+        working-directory: ./api
+
+  api-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./api
+
+      - name: Run eslint
+        run: npm test
+        working-directory: ./api
