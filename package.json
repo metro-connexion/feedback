@@ -1,0 +1,22 @@
+{
+  "name": "feedback",
+  "version": "1.0.0",
+  "description": "Report feedback about metro-connexion services",
+  "homepage": "https://github.com/metro-connexion/feedback#readme",
+  "bugs": {
+    "url": "https://github.com/metro-connexion/feedback/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metro-connexion/feedback.git"
+  },
+  "license": "MIT",
+  "author": "metro-connexion",
+  "type": "module",
+  "engines": {
+    "node": "24.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
