@@ -19,7 +19,8 @@
   "scripts": {
     "lint:root": "eslint .",
     "lint:root:fix": "eslint --fix",
-    "lint": "run-p --print-label lint:root"
+    "lint": "run-p --print-label lint:root",
+    "configure": "sh scripts/configure.sh"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
