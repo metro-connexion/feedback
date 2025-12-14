@@ -23,5 +23,8 @@
     "eslint-plugin-jsdoc": "^61.5.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-vitest-globals": "^1.5.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }
