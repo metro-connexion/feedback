@@ -16,13 +16,16 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "NODE_ENV=test && vitest run"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "eslint-plugin-jsdoc": "^61.5.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-vitest-globals": "^1.5.0"
+    "eslint-plugin-vitest-globals": "^1.5.0",
+    "supertest": "^7.1.4",
+    "vitest": "^4.0.15"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
