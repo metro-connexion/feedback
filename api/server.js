@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 
 import { logger } from "./logger.js";
+import healthCheckRoute from "./src/shared/routes/health-check-route.js";
 
 const server = express();
 server.use(cors());
@@ -13,5 +14,8 @@ server.use((req, res, next) => {
   });
   next();
 });
+
+// Define routes here
+server.use(healthCheckRoute);
 
 export default server;
