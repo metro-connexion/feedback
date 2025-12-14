@@ -1,0 +1,17 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "The api of Feedback plateforme",
+  "homepage": "https://github.com/metro-connexion/feedback#readme",
+  "bugs": {
+    "url": "https://github.com/metro-connexion/feedback/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metro-connexion/feedback.git"
+  },
+  "license": "MIT",
+  "author": "metro-connexion",
+  "type": "module",
+  "main": "index.js",
+}
