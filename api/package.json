@@ -17,8 +17,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "NODE_ENV=test && vitest run",
     "dev": "npm run db:prepare:dev && nodemon index.js",
+    "test": "NODE_ENV=test npm run db:prepare && NODE_ENV=test vitest run",
     "start": "node index.js",
     "db:new-migration": "npx knex --knexfile ./db/knexfile.js  migrate:make --stub $PWD/db/template.js $migrationname",
     "db:create": "node ./db/create-database.js",
