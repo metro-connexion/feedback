@@ -1,0 +1,41 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "The api of Feedback plateforme",
+  "homepage": "https://github.com/metro-connexion/feedback#readme",
+  "bugs": {
+    "url": "https://github.com/metro-connexion/feedback/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metro-connexion/feedback.git"
+  },
+  "license": "MIT",
+  "author": "metro-connexion",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "NODE_ENV=test && vitest run",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint-plugin-jsdoc": "^61.5.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-vitest-globals": "^1.5.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4",
+    "vitest": "^4.0.15"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "lodash": "^4.17.21",
+    "pino": "^10.1.0",
+    "pino-pretty": "^13.1.3"
+  }
+}

@@ -19,7 +19,14 @@
   "scripts": {
     "lint:root": "eslint .",
     "lint:root:fix": "eslint --fix",
-    "lint": "run-p --print-label lint:root",
+    "lint:api": "cd api && npm run lint",
+    "lint": "run-p --print-label lint:root lint:api",
+    "ci:api": "cd api && npm ci",
+    "ci:all": "run-p --print-label ci:api",
+    "test:api": "cd api && npm t",
+    "test": "run-p --print-label test:*",
+    "dev:api": "cd api && npm run dev",
+    "dev": "run-p --print-label dev:*",
     "configure": "sh scripts/configure.sh"
   },
   "devDependencies": {

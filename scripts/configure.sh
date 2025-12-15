@@ -7,12 +7,12 @@ echo "Configuring the environment for the project..."
 # Install all dependencies
 echo "Installing dependencies..."
 npm ci || { echo "Error installing npm ci dependencies"; exit 1; }
-#npm run ci:all || { echo "Error running npm run ci:all"; exit 1; }
-#
-## api
-## Environment variable
-#echo "Setting up environment variables..."
-#cp ./api/sample.env ./api/.env || { echo "Error copying environment file"; exit 1; }
+npm run ci:all || { echo "Error running npm run ci:all"; exit 1; }
+
+# api
+# Environment variable
+echo "Setting up environment variables..."
+cp ./api/sample.env ./api/.env || { echo "Error copying environment file"; exit 1; }
 #
 ## docker
 #echo "Starting Docker"
