@@ -9,4 +9,4 @@ A user can open an issue on the platform by describing the problem they encounte
 Initially, users will be able to sign in using email and password, and later via common SSOs (Google, Apple). It has not yet been decided whether this authentication will be shared across the entire metro-connexion ecosystem.
 
 ## Project development
-A quick-start guide for development will be written as soon as the project is installed for the first time.
+Read the [Installation guide](docs/installation.md) to configure the project.

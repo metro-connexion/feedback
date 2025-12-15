@@ -37,3 +37,18 @@ chmod +x ./scripts/configure.sh
 Troubleshooting
 - If `npm` is not found, ensure Node.js is installed via `nvm install` and that `nvm use` completed successfully.
 - If the configure script fails, check the output for an error line and consult the script in `scripts/configure.sh` for the step that failed.
+
+## Start development
+Goto app and run npm run dev, for example:
+```shell
+cd api
+npm run dev
+```
+You can also start app from project root:
+```shell
+npm run dev:api
+```
+or start all project apps with:
+```shell
+npm run dev
+```
