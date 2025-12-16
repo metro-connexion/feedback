@@ -22,10 +22,11 @@ docker compose up -d || { echo "Error starting Docker"; exit 1; }
 echo "Creating database..."
 cd ./api && npm run db:reset && cd ../ || { echo "Error resetting the database"; exit 1; }
 
-## web
-## copy the sample env to env
-#echo "Setting up web environment variables..."
-#cp ./web/sample.env ./web/.env || { echo "Error copying web environment file"; exit 1; }
-#
+
+# web
+# copy the sample env to env
+echo "Setting up web environment variables..."
+cp ./web/sample.env ./web/.env || { echo "Error copying web environment file"; exit 1; }
+
 # end
 echo "Configuration complete."
