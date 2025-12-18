@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:18.1-alpine
+    container_name: feedback-postgres
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+    env_file:
+      - ./api/.env
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust

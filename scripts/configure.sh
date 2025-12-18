@@ -13,15 +13,15 @@ npm run ci:all || { echo "Error running npm run ci:all"; exit 1; }
 # Environment variable
 echo "Setting up environment variables..."
 cp ./api/sample.env ./api/.env || { echo "Error copying environment file"; exit 1; }
-#
-## docker
-#echo "Starting Docker"
-#docker compose up -d || { echo "Error starting Docker"; exit 1; }
-#
-## database
-#echo "Creating database..."
-#cd ./api && npm run db:reset && cd ../ || { echo "Error resetting the database"; exit 1; }
-#
+
+# docker
+echo "Starting Docker"
+docker compose up -d || { echo "Error starting Docker"; exit 1; }
+
+# database
+echo "Creating database..."
+cd ./api && npm run db:reset && cd ../ || { echo "Error resetting the database"; exit 1; }
+
 ## web
 ## copy the sample env to env
 #echo "Setting up web environment variables..."

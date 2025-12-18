@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import jsdoc from "eslint-plugin-jsdoc";
+import eslintPluginKnex from "eslint-plugin-knex";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import vitestGlobals from "eslint-plugin-vitest-globals";
 import globals from "globals";
@@ -70,6 +71,14 @@ export default defineConfig([
       globals: {
         ...globals.node,
       },
+    },
+  },
+  {
+    "plugins": {
+      "knex": eslintPluginKnex,
+    },
+    "rules": {
+      "knex/avoid-injections": "off",
     },
   },
   {
