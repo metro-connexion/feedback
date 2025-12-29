@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 # Jetbrains ides
 .idea
+
+# MacOS
+*.DS_Store
