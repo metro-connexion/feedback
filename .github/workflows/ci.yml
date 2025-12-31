@@ -110,3 +110,44 @@ jobs:
       - name: Run tests
         run: npm test
         working-directory: ./web
+
+
+  cli-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./cli
+
+      - name: Run eslint
+        run: npm run lint
+        working-directory: ./cli
+
+  cli-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./cli
+
+      - name: Run tests
+        run: npm test
+        working-directory: ./cli

@@ -52,3 +52,10 @@ or start all project apps with:
 ```shell
 npm run dev
 ```
+
+### The cli
+This project has a cli tool for command line usage. You can run this cli commands in the cli folder without compilation or link of npm
+```shell
+npm run cli -- health --help
+```
+Later, this cli will be distribute on npm or homebrew.

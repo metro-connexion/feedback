@@ -7,7 +7,7 @@ import pluginYaml from "eslint-plugin-yaml";
 import globals from "globals";
 
 export default defineConfig([
-  { ignores: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml", "node_modules/**", "api/", "web/"] },
+  { ignores: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml", "node_modules/**", "api/", "cli/", "web/"] },
   {
     files: ["**/*.{js,mjs,cjs}"],
     plugins: {
