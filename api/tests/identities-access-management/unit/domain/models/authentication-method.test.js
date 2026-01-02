@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { LOGIN_IDENTITY_PROVIDER } from "../../../../src/identities-access-management/constants.js";
-import { AuthenticationMethod } from "../../../../src/identities-access-management/models/authentication-method.js";
+import { LOGIN_IDENTITY_PROVIDER } from "../../../../../src/identities-access-management/constants.js";
+import { AuthenticationMethod } from "../../../../../src/identities-access-management/domain/models/authentication-method.js";
 
-describe("Unit | Identities Access Management | Models | Authentication method", () => {
+describe("Unit | Identities Access Management | Domain | Models | Authentication method", () => {
   it("should return instance with data", () => {
     // given
     const data = { id: 123, identityProvider: "provider", userId: 1234, hashedPassword: null };

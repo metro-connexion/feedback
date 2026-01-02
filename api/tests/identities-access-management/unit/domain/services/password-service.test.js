@@ -1,10 +1,10 @@
 import bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { config } from "../../../../config.js";
-import * as passwordService from "../../../../src/identities-access-management/services/password-service.js";
+import { config } from "../../../../../config.js";
+import * as passwordService from "../../../../../src/identities-access-management/domain/services/password-service.js";
 
-describe("Unit | Identities Access Management | Services | Password service", () => {
+describe("Unit | Identities Access Management | Domain | Services | Password service", () => {
   beforeEach(() => {
     config.users.passwordHash = 10;
   });

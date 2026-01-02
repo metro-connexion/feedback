@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { USER_TYPES } from "../../../../src/identities-access-management/constants.js";
-import { User } from "../../../../src/identities-access-management/models/user.js";
+import { USER_TYPES } from "../../../../../src/identities-access-management/constants.js";
+import { User } from "../../../../../src/identities-access-management/domain/models/user.js";
 
-describe("Unit | Identities Access Management | Models | User", () => {
+describe("Unit | Identities Access Management | Domain | Models | User", () => {
   it("should return User model with data", () => {
     // given
     const userData = {

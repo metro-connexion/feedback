@@ -1,4 +1,4 @@
-import { USER_TYPES } from "../constants.js";
+import { USER_TYPES } from "../../constants.js";
 
 /**
  * User domain model

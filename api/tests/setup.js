@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, vi } from "vitest";
+import { afterAll, afterEach, beforeEach, vi } from "vitest";
 
 import { knex } from "../db/knex-database-connection.js";
 
@@ -23,6 +23,6 @@ afterEach(function() {
   vi.clearAllMocks();
 });
 
-// afterAll(async () => {
-//   await knex.destroy();
-// });
+afterAll(async () => {
+  await knex.destroy();
+});

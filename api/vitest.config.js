@@ -9,7 +9,7 @@ export default defineConfig({
       {
         test: {
           name: "Unit tests",
-          setupFiles: ["./tests/setup.js"],
+          setupFiles: ["./tests/setup-unit.js"],
           isolate: true,
           include: ["tests/**/unit/**/*.test.js"],
         },

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { databaseBuilder } from "../../../../db/database-builder/index.js";
-import { knex } from "../../../../db/knex-database-connection.js";
-import { LOGIN_IDENTITY_PROVIDER } from "../../../../src/identities-access-management/constants.js";
-import { AuthenticationMethod } from "../../../../src/identities-access-management/models/authentication-method.js";
-import * as authenticationMethodsRepository from "../../../../src/identities-access-management/repositories/authentication-methods-repository.js";
+import { databaseBuilder } from "../../../../../db/database-builder/index.js";
+import { knex } from "../../../../../db/knex-database-connection.js";
+import { LOGIN_IDENTITY_PROVIDER } from "../../../../../src/identities-access-management/constants.js";
+import { AuthenticationMethod } from "../../../../../src/identities-access-management/domain/models/authentication-method.js";
+import * as authenticationMethodsRepository from "../../../../../src/identities-access-management/infrastructure/repositories/authentication-methods-repository.js";
 
-describe("Integration | Identities Access Management | Repositories | Authentication methods repository", () => {
+describe("Integration | Identities Access Management | Infrastructure | Repositories | Authentication methods repository", () => {
   describe("#addNewAuthenticationMethod", () => {
     it("should add the authentication method for an user", async () => {
       // given
