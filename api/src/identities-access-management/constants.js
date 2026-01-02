@@ -3,4 +3,6 @@ const USER_TYPES = {
   USER: "user",
 };
 
-export { USER_TYPES };
+const LOGIN_IDENTITY_PROVIDER = "login";
+
+export { LOGIN_IDENTITY_PROVIDER, USER_TYPES };
