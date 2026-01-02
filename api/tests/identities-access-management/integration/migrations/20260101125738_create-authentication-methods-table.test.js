@@ -132,10 +132,11 @@ describe("Integration | Identities Access Management | Migrations | Create authe
     it("should enforce foreign key constraint on userId referencing users table", async () => {
       // given
       await up(knex);
+      const NON_EXISTENT_USER_ID = 99999;
 
       // when
       const insertInvalidUser = knex(TABLE_NAME).insert({
-        userId: 99999,
+        userId: NON_EXISTENT_USER_ID,
         identityProvider: "login",
         hashedPassword: "hash123",
       });
