@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { config } from "../../../../config.js";
+import { config } from "../../../../../config.js";
 
-describe("Integration | Identities Access Management | Services | Password service", () => {
+describe("Integration | Identities Access Management | Domain | Services | Password service", () => {
   beforeEach(() => {
     config.users.passwordHash = 10;
   });

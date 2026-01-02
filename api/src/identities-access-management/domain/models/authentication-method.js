@@ -1,4 +1,4 @@
-import { LOGIN_IDENTITY_PROVIDER } from "../constants.js";
+import { LOGIN_IDENTITY_PROVIDER } from "../../constants.js";
 
 /**
  * Represents an authentication method for a user.

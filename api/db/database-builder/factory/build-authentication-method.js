@@ -1,5 +1,5 @@
 import { LOGIN_IDENTITY_PROVIDER } from "../../../src/identities-access-management/constants.js";
-import { generatePassword } from "../../../src/identities-access-management/services/password-service.js";
+import { generatePassword } from "../../../src/identities-access-management/domain/services/password-service.js";
 import { knex } from "../../knex-database-connection.js";
 
 let passwordPromise;

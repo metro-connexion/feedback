@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
-import { config } from "../../../config.js";
-import { logger } from "../../../logger.js";
+import { config } from "../../../../config.js";
+import { logger } from "../../../../logger.js";
 
 const { passwordHash } = config.users;
 

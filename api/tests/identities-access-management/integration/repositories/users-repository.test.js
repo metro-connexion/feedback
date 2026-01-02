@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { databaseBuilder } from "../../../../db/database-builder/index.js";
 import { knex } from "../../../../db/knex-database-connection.js";
-import { User } from "../../../../src/identities-access-management/models/user.js";
+import { User } from "../../../../src/identities-access-management/domain/models/user.js";
 import * as usersRepository from "../../../../src/identities-access-management/repositories/users-repository.js";
 
 describe("Integration | Identities Access Management | Repositories | Users repository", () => {
