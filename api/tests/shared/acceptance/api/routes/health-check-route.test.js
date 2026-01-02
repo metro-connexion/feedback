@@ -1,9 +1,9 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 
-import server from "../../../../server.js";
+import server from "../../../../../server.js";
 
-describe("Acceptance | Shared | Routes |  Health Check", () => {
+describe("Acceptance | Shared | Api | Routes |  Health Check", () => {
   describe("GET /api/health", () => {
     it("should return 200 http status and message", async () => {
       // given

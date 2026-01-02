@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 
 import { logger } from "./logger.js";
-import healthCheckRoute from "./src/shared/routes/health-check-route.js";
+import healthCheckRoute from "./src/shared/api/routes/health-check-route.js";
 
 const server = express();
 server.use(cors());
