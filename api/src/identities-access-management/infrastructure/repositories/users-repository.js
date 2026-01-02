@@ -1,6 +1,6 @@
-import { knex } from "../../../db/knex-database-connection.js";
-import { DomainTransaction } from "../../shared/infrastructure/DomainTransaction.js";
-import { User } from "../domain/models/user.js";
+import { knex } from "../../../../db/knex-database-connection.js";
+import { DomainTransaction } from "../../../shared/infrastructure/DomainTransaction.js";
+import { User } from "../../domain/models/user.js";
 
 const TABLE_NAME = "users";
 

@@ -1,6 +1,6 @@
-import { knex } from "../../../db/knex-database-connection.js";
-import { DomainTransaction } from "../../shared/infrastructure/DomainTransaction.js";
-import { AuthenticationMethod } from "../domain/models/authentication-method.js";
+import { knex } from "../../../../db/knex-database-connection.js";
+import { DomainTransaction } from "../../../shared/infrastructure/DomainTransaction.js";
+import { AuthenticationMethod } from "../../domain/models/authentication-method.js";
 
 const TABLE_NAME = "authentication-methods";
 

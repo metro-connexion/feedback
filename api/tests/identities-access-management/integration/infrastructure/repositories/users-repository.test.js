@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { databaseBuilder } from "../../../../db/database-builder/index.js";
-import { knex } from "../../../../db/knex-database-connection.js";
-import { User } from "../../../../src/identities-access-management/domain/models/user.js";
-import * as usersRepository from "../../../../src/identities-access-management/repositories/users-repository.js";
+import { databaseBuilder } from "../../../../../db/database-builder/index.js";
+import { knex } from "../../../../../db/knex-database-connection.js";
+import { User } from "../../../../../src/identities-access-management/domain/models/user.js";
+import * as usersRepository from "../../../../../src/identities-access-management/infrastructure/repositories/users-repository.js";
 
-describe("Integration | Identities Access Management | Repositories | Users repository", () => {
+describe("Integration | Identities Access Management | Infrastructure | Repositories | Users repository", () => {
   describe("#createUser", () => {
     it("should create user successfull", async () => {
       // given
