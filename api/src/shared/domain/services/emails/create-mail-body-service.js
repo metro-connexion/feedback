@@ -22,6 +22,22 @@ function escapeRegExp(string) {
 }
 
 /**
+ * Escapes HTML special characters to prevent XSS attacks.
+ * @param {string} text - The text to escape
+ * @returns {string} The escaped text safe for HTML insertion
+ */
+function escapeHtml(text) {
+  const htmlEscapeMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;",
+  };
+  return text.replace(/[&<>"']/g, (char) => htmlEscapeMap[char]);
+}
+
+/**
  * Creates the mail body by reading a markdown file and replacing placeholders with provided values.
  * @param {string} documentName - Name of the markdown file (without extension) to read from the email-templates folder
  * @param {object} replaceElements - An object containing key-value pairs where keys are placeholders in the markdown file (enclosed in {{}}) and values are the strings to replace them with
@@ -42,7 +58,8 @@ async function createMailBodyService(documentName, replaceElements) {
     if (replaceElements) {
       for (const [key, value] of Object.entries(replaceElements)) {
         const placeholder = `{{${key}}}`;
-        mailBody = mailBody.replace(new RegExp(escapeRegExp(placeholder), "g"), value);
+        const sanitizedValue = escapeHtml(value);
+        mailBody = mailBody.replace(new RegExp(escapeRegExp(placeholder), "g"), sanitizedValue);
       }
     }
 

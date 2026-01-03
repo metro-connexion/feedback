@@ -46,4 +46,87 @@ describe("Unit | shared | Create mail body", () => {
     // when // then
     await expect(createMailBodyService("unknown")).rejects.toThrow("File not found");
   });
+
+  it("should escape HTML special characters to prevent XSS", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Hello {{name}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = { name: "<script>alert('XSS')</script>" };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;");
+    expect(result).not.toContain("<script>");
+  });
+
+  it("should escape ampersands in replacement values", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Company: {{company}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = { company: "Smith & Sons" };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("Smith &amp; Sons");
+  });
+
+  it("should escape quotes in replacement values", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Message: {{msg}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = { msg: "He said \"hello\" and she said 'hi'" };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("&quot;hello&quot;");
+    expect(result).toContain("&#39;hi&#39;");
+  });
+
+  it("should escape angle brackets in replacement values", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Expression: {{expr}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = { expr: "a < b and c > d" };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("a &lt; b and c &gt; d");
+  });
+
+  it("should handle multiple placeholders with potentially malicious content", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("User {{name}} from {{company}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = {
+      name: "<img src=x onerror=alert('XSS')>",
+      company: "<iframe src='evil.com'></iframe>",
+    };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("&lt;img src=x onerror=alert(&#39;XSS&#39;)&gt;");
+    expect(result).toContain("&lt;iframe src=&#39;evil.com&#39;&gt;&lt;/iframe&gt;");
+    expect(result).not.toContain("<img");
+    expect(result).not.toContain("<iframe");
+  });
 });
