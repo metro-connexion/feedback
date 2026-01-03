@@ -5,6 +5,12 @@ import { logger } from "../../../../../logger.js";
 
 const { email } = config;
 
+/**
+ * Cached test account credentials to avoid creating a new test account for every email.
+ * The cache persists for the lifetime of the application process.
+ * This is intentional to reduce unnecessary network calls to the Ethereal email service.
+ * @type {object|null}
+ */
 let cachedTestAccount = null;
 
 /**
