@@ -129,4 +129,41 @@ describe("Unit | shared | Create mail body", () => {
     expect(result).not.toContain("<img");
     expect(result).not.toContain("<iframe");
   });
+
+  it("should handle null and undefined replacement values", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Value1: {{val1}}, Value2: {{val2}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = {
+      val1: null,
+      val2: undefined,
+    };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("Value1: , Value2: ");
+  });
+
+  it("should convert non-string replacement values to strings", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Number: {{num}}, Boolean: {{bool}}")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = {
+      num: 123,
+      bool: true,
+    };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("Number: 123");
+    expect(result).toContain("Boolean: true");
+  });
 });

@@ -27,6 +27,10 @@ function escapeRegExp(string) {
  * @returns {string} The escaped text safe for HTML insertion
  */
 function escapeHtml(text) {
+  if (text === null || text === undefined) {
+    return "";
+  }
+  const stringValue = String(text);
   const htmlEscapeMap = {
     "&": "&amp;",
     "<": "&lt;",
@@ -34,7 +38,7 @@ function escapeHtml(text) {
     "\"": "&quot;",
     "'": "&#39;",
   };
-  return text.replace(/[&<>"']/g, (char) => htmlEscapeMap[char]);
+  return stringValue.replace(/[&<>"']/g, (char) => htmlEscapeMap[char]);
 }
 
 /**
