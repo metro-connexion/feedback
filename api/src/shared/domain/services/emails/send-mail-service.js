@@ -113,7 +113,8 @@ async function sendMailService(req) {
 /**
  * Reset the cached test account credentials.
  * This function is intended for testing purposes only to ensure test isolation.
- * @private
+ * It should only be called from test setup/teardown code, not from application code.
+ * @internal
  */
 function resetTestAccountCache() {
   cachedTestAccountPromise = null;
