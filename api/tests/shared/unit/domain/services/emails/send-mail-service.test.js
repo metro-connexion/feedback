@@ -325,93 +325,174 @@ describe("Unit | Shared | Domain | Services | Emails Send mail", () => {
       vi.clearAllMocks();
     });
 
-    it("should redact recipient email address in logs", async () => {
-      // given
-      const req = {
-        to: "sensitive-user@example.net",
-        subject: "Test subject",
-        text: "Test content",
-      };
+    describe("in production environment", () => {
+      beforeEach(() => {
+        config.environment = "production";
+      });
 
-      // when
-      await sendMailService(req);
+      it("should redact recipient email address in logs", async () => {
+        // given
+        const req = {
+          to: "sensitive-user@example.net",
+          subject: "Test subject",
+          text: "Test content",
+        };
 
-      // then
-      expect(logger.info).toHaveBeenCalledOnce();
-      const logCall = logger.info.mock.calls[0][0];
-      expect(logCall).not.toContain("sensitive-user@example.net");
-      expect(logCall).toContain("[REDACTED]");
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).not.toContain("sensitive-user@example.net");
+        expect(logCall).toContain("[REDACTED]");
+      });
+
+      it("should redact email subject in logs", async () => {
+        // given
+        const req = {
+          to: "user@example.net",
+          subject: "Confidential: password reset",
+          text: "Test content",
+        };
+
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).not.toContain("Confidential: password reset");
+        expect(logCall).toContain("[REDACTED]");
+      });
+
+      it("should redact text content in logs", async () => {
+        // given
+        const req = {
+          to: "user@example.net",
+          subject: "Test",
+          text: "Your password is: secret123",
+        };
+
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).not.toContain("Your password is: secret123");
+        expect(logCall).toContain("[REDACTED - 27 characters]");
+      });
+
+      it("should redact HTML content in logs", async () => {
+        // given
+        const req = {
+          to: "user@example.net",
+          subject: "Test",
+          html: "<html><body>Sensitive data here</body></html>",
+        };
+
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).not.toContain("Sensitive data here");
+        expect(logCall).toContain("[REDACTED - 45 characters]");
+      });
+
+      it("should include from address in logs as it is not sensitive", async () => {
+        // given
+        const req = {
+          to: "user@example.net",
+          subject: "Test",
+          text: "Test content",
+        };
+
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).toContain("john.doe@example.net");
+      });
     });
 
-    it("should redact email subject in logs", async () => {
-      // given
-      const req = {
-        to: "user@example.net",
-        subject: "Confidential: password reset",
-        text: "Test content",
-      };
+    describe("in development environment", () => {
+      beforeEach(() => {
+        config.environment = "development";
+      });
 
-      // when
-      await sendMailService(req);
+      it("should log full recipient email address for debugging", async () => {
+        // given
+        const req = {
+          to: "developer@example.net",
+          subject: "Test subject",
+          text: "Test content",
+        };
 
-      // then
-      expect(logger.info).toHaveBeenCalledOnce();
-      const logCall = logger.info.mock.calls[0][0];
-      expect(logCall).not.toContain("Confidential: password reset");
-      expect(logCall).toContain("[REDACTED]");
-    });
+        // when
+        await sendMailService(req);
 
-    it("should redact text content in logs", async () => {
-      // given
-      const req = {
-        to: "user@example.net",
-        subject: "Test",
-        text: "Your password is: secret123",
-      };
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).toContain("developer@example.net");
+        expect(logCall).not.toContain("[REDACTED]");
+      });
 
-      // when
-      await sendMailService(req);
+      it("should log full email subject for debugging", async () => {
+        // given
+        const req = {
+          to: "dev@example.net",
+          subject: "Debug: test email",
+          text: "Test content",
+        };
 
-      // then
-      expect(logger.info).toHaveBeenCalledOnce();
-      const logCall = logger.info.mock.calls[0][0];
-      expect(logCall).not.toContain("Your password is: secret123");
-      expect(logCall).toContain("[REDACTED - 27 characters]");
-    });
+        // when
+        await sendMailService(req);
 
-    it("should redact HTML content in logs", async () => {
-      // given
-      const req = {
-        to: "user@example.net",
-        subject: "Test",
-        html: "<html><body>Sensitive data here</body></html>",
-      };
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).toContain("Debug: test email");
+      });
 
-      // when
-      await sendMailService(req);
+      it("should log full text content for debugging", async () => {
+        // given
+        const req = {
+          to: "dev@example.net",
+          subject: "Test",
+          text: "Debug content here",
+        };
 
-      // then
-      expect(logger.info).toHaveBeenCalledOnce();
-      const logCall = logger.info.mock.calls[0][0];
-      expect(logCall).not.toContain("Sensitive data here");
-      expect(logCall).toContain("[REDACTED - 45 characters]");
-    });
+        // when
+        await sendMailService(req);
 
-    it("should include from address in logs as it is not sensitive", async () => {
-      // given
-      const req = {
-        to: "user@example.net",
-        subject: "Test",
-        text: "Test content",
-      };
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).toContain("Debug content here");
+      });
 
-      // when
-      await sendMailService(req);
+      it("should log full HTML content for debugging", async () => {
+        // given
+        const req = {
+          to: "dev@example.net",
+          subject: "Test",
+          html: "<html><body>Debug HTML content</body></html>",
+        };
 
-      // then
-      expect(logger.info).toHaveBeenCalledOnce();
-      const logCall = logger.info.mock.calls[0][0];
-      expect(logCall).toContain("john.doe@example.net");
+        // when
+        await sendMailService(req);
+
+        // then
+        expect(logger.info).toHaveBeenCalledOnce();
+        const logCall = logger.info.mock.calls[0][0];
+        expect(logCall).toContain("Debug HTML content");
+      });
     });
   });
 });

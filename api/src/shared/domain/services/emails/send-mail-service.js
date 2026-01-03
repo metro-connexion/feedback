@@ -56,8 +56,10 @@ async function sendMailService(req) {
   }
 
   if (!email.enabled) {
-    const sanitizedOptions = sanitizeMailOptionsForLogging(mailOptions);
-    logger.info(`Email disabled. Mail not sent. Mail info: ${JSON.stringify(sanitizedOptions)}`);
+    const logOptions = config.environment === "production" 
+      ? sanitizeMailOptionsForLogging(mailOptions)
+      : mailOptions;
+    logger.info(`Email disabled. Mail not sent. Mail info: ${JSON.stringify(logOptions)}`);
     return {
       info: "Email sending disabled",
       data: mailOptions,
