@@ -335,6 +335,37 @@ describe("Unit | Shared | Domain | Services | Emails Send mail", () => {
     });
   });
 
+  describe("Test account caching", () => {
+    beforeEach(() => {
+      email.enabled = true;
+      email.testAccount = true;
+      vi.clearAllMocks();
+    });
+
+    it("should cache test account credentials and reuse them across multiple calls", async () => {
+      // given
+      const testAccount = {
+        user: "test@ethereal.email",
+        pass: "testpassword",
+      };
+      vi.spyOn(nodemailer, "createTestAccount").mockResolvedValue(testAccount);
+
+      const req = {
+        to: "user@example.net",
+        subject: "Test",
+        text: "Test content",
+      };
+
+      // when
+      await sendMailService(req);
+      await sendMailService(req);
+      await sendMailService(req);
+
+      // then
+      expect(nodemailer.createTestAccount).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("Logging security when email is disabled", () => {
     beforeEach(() => {
       email.enabled = false;

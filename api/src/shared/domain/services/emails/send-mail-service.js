@@ -5,6 +5,8 @@ import { logger } from "../../../../../logger.js";
 
 const { email } = config;
 
+let cachedTestAccount = null;
+
 /**
  * Sanitize mail options for logging to prevent information disclosure
  * @param {object} mailOptions - The mail options object
@@ -65,17 +67,19 @@ async function sendMailService(req) {
       data: mailOptions,
     };
   }
-  let transporter, testAccount;
+  let transporter;
 
   if (email.testAccount) {
-    testAccount = await nodemailer.createTestAccount();
+    if (!cachedTestAccount) {
+      cachedTestAccount = await nodemailer.createTestAccount();
+    }
     transporter = nodemailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
       secure: false,
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
+        user: cachedTestAccount.user,
+        pass: cachedTestAccount.pass,
       },
     });
   } else {
