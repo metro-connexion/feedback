@@ -39,6 +39,23 @@ describe("Unit | Shared | Domain | Services | Email | Create mail body", () => {
     expect(result).toContain("-- Footer --");
   });
 
+  it("should replace multiple occurrences of the same placeholder", async () => {
+    // given
+    fs.readFile
+      .mockResolvedValueOnce("Hello {{name}}, your name is {{name}}. Welcome {{name}}!")
+      .mockResolvedValueOnce("\n-- Footer --");
+
+    const replaceElements = { name: "Alice" };
+
+    // when
+    const result = await createMailBodyService("test", replaceElements);
+
+    // then
+    expect(result).toContain("Hello Alice, your name is Alice. Welcome Alice!");
+    expect(result).not.toContain("{{name}}");
+    expect(result).toContain("-- Footer --");
+  });
+
   it("should throw an error if reading failed", async () => {
     // given
     fs.readFile.mockRejectedValue(new Error("File not found"));
