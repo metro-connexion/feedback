@@ -64,7 +64,7 @@ async function sendMailService(req) {
   }
 
   if (!email.enabled) {
-    const logOptions = config.environment === "production" 
+    const logOptions = config.environment === "production"
       ? sanitizeMailOptionsForLogging(mailOptions)
       : mailOptions;
     logger.info(`Email disabled. Mail not sent. Mail info: ${JSON.stringify(logOptions)}`);
@@ -110,4 +110,13 @@ async function sendMailService(req) {
   }
 }
 
-export { sendMailService };
+/**
+ * Reset the cached test account credentials.
+ * This function is intended for testing purposes only to ensure test isolation.
+ * @private
+ */
+function resetTestAccountCache() {
+  cachedTestAccountPromise = null;
+}
+
+export { resetTestAccountCache, sendMailService };

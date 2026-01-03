@@ -1,6 +1,7 @@
 import { afterAll, afterEach, beforeEach, vi } from "vitest";
 
 import { knex } from "../db/knex-database-connection.js";
+import { resetTestAccountCache } from "../src/shared/domain/services/emails/send-mail-service.js";
 
 beforeEach(async () => {
   const tables = await knex("pg_tables")
@@ -21,6 +22,7 @@ afterEach(function() {
   vi.restoreAllMocks();
   vi.resetAllMocks();
   vi.clearAllMocks();
+  resetTestAccountCache();
 });
 
 afterAll(async () => {
