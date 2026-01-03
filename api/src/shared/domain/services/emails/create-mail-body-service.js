@@ -22,7 +22,20 @@ function escapeRegExp(string) {
 }
 
 /**
+ * Map of HTML special characters to their escaped equivalents
+ */
+const HTML_ESCAPE_MAP = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  "\"": "&quot;",
+  "'": "&#39;",
+};
+
+/**
  * Escapes HTML special characters to prevent XSS attacks.
+ * The regex replacement ensures each character is only escaped once,
+ * preventing double-escaping issues.
  * @param {string} text - The text to escape
  * @returns {string} The escaped text safe for HTML insertion
  */
@@ -31,14 +44,7 @@ function escapeHtml(text) {
     return "";
   }
   const stringValue = String(text);
-  const htmlEscapeMap = {
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "\"": "&quot;",
-    "'": "&#39;",
-  };
-  return stringValue.replace(/[&<>"']/g, (char) => htmlEscapeMap[char]);
+  return stringValue.replace(/[&<>"']/g, (char) => HTML_ESCAPE_MAP[char]);
 }
 
 /**
