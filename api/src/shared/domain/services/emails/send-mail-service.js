@@ -9,9 +9,9 @@ const { email } = config;
  * Cached test account credentials to avoid creating a new test account for every email.
  * The cache persists for the lifetime of the application process.
  * This is intentional to reduce unnecessary network calls to the Ethereal email service.
- * @type {object|null}
+ * @type {Promise<object>|null}
  */
-let cachedTestAccount = null;
+let cachedTestAccountPromise = null;
 
 /**
  * Sanitize mail options for logging to prevent information disclosure
@@ -76,16 +76,17 @@ async function sendMailService(req) {
   let transporter;
 
   if (email.testAccount) {
-    if (!cachedTestAccount) {
-      cachedTestAccount = await nodemailer.createTestAccount();
+    if (!cachedTestAccountPromise) {
+      cachedTestAccountPromise = nodemailer.createTestAccount();
     }
+    const testAccount = await cachedTestAccountPromise;
     transporter = nodemailer.createTransport({
       host: "smtp.ethereal.email",
       port: 587,
       secure: false,
       auth: {
-        user: cachedTestAccount.user,
-        pass: cachedTestAccount.pass,
+        user: testAccount.user,
+        pass: testAccount.pass,
       },
     });
   } else {
