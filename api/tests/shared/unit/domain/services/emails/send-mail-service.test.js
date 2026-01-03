@@ -163,6 +163,22 @@ describe("Unit | Shared | Domain | Services | Emails Send mail", () => {
       // then
       await expect(promise).rejects.toThrow("Email content is required");
     });
+
+    it("should throw an error if both text and html are empty strings", async () => {
+      // given
+      const req = {
+        to: "alex-terieur@example.net",
+        subject: "Test subject",
+        text: "",
+        html: "",
+      };
+
+      // when
+      const promise = sendMailService(req);
+
+      // then
+      await expect(promise).rejects.toThrow("Email content is required");
+    });
   });
 
   describe("when mail is disabled", () => {
