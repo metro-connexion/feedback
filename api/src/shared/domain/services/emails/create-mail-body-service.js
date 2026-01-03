@@ -12,6 +12,9 @@ const MAIL_FOLDER = path.resolve(
 );
 const FOOTER_FILE_NAME = "footer.md";
 
+// Cache for footer content to avoid repeated file I/O
+let footerCache = null;
+
 /**
  * Escapes special characters in a string to be used in a regular expression.
  * @param {string} string - The string to escape
@@ -19,6 +22,18 @@ const FOOTER_FILE_NAME = "footer.md";
  */
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Loads the footer content from cache or file system.
+ * @returns {Promise<string>} The footer content
+ */
+async function getFooter() {
+  if (footerCache === null) {
+    const footerPath = path.join(MAIL_FOLDER, FOOTER_FILE_NAME);
+    footerCache = await fs.readFile(footerPath, "utf8");
+  }
+  return footerCache;
 }
 
 /**
@@ -30,11 +45,10 @@ function escapeRegExp(string) {
 async function createMailBodyService(documentName, replaceElements) {
   try {
     const documentPath = path.join(MAIL_FOLDER, `${documentName}.md`);
-    const footerPath = path.join(MAIL_FOLDER, FOOTER_FILE_NAME);
 
     const [documentBody, footerBody] = await Promise.all([
       fs.readFile(documentPath, "utf8"),
-      fs.readFile(footerPath, "utf8"),
+      getFooter(),
     ]);
 
     let mailBody = documentBody;

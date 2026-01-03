@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createMailBodyService } from "../../../../../../src/shared/domain/services/emails/create-mail-body-service.js";
 
@@ -9,6 +9,10 @@ vi.mock("node:fs/promises", () => ({
 }));
 
 describe("Unit | Shared | Domain | Services | Email | Create mail body", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should replace placeholders and add footer", async () => {
     // given
     fs.readFile
