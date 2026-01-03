@@ -6,6 +6,28 @@ import { logger } from "../../../../../logger.js";
 const { email } = config;
 
 /**
+ * Sanitize mail options for logging to prevent information disclosure
+ * @param {object} mailOptions - The mail options object
+ * @returns {object} Sanitized mail options safe for logging
+ */
+function sanitizeMailOptionsForLogging(mailOptions) {
+  const sanitized = {
+    from: mailOptions.from,
+    to: mailOptions.to ? "[REDACTED]" : undefined,
+    subject: mailOptions.subject ? "[REDACTED]" : undefined,
+  };
+
+  if (mailOptions.text) {
+    sanitized.text = `[REDACTED - ${mailOptions.text.length} characters]`;
+  }
+  if (mailOptions.html) {
+    sanitized.html = `[REDACTED - ${mailOptions.html.length} characters]`;
+  }
+
+  return sanitized;
+}
+
+/**
  * Send an email using nodemailer
  * @param {object} req - Email request object
  * @param {string} req.to - Recipient email address
@@ -34,7 +56,8 @@ async function sendMailService(req) {
   }
 
   if (!email.enabled) {
-    logger.info(`Email disabled. Mail not sent. Mail info: ${JSON.stringify(mailOptions)}`);
+    const sanitizedOptions = sanitizeMailOptionsForLogging(mailOptions);
+    logger.info(`Email disabled. Mail not sent. Mail info: ${JSON.stringify(sanitizedOptions)}`);
     return {
       info: "Email sending disabled",
       data: mailOptions,
