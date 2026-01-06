@@ -46,4 +46,17 @@ async function findUserById(userId) {
   return user ? new User(user) : null;
 }
 
-export { createUser, findUserByEmail, findUserById };
+/**
+ * Update last logged at by user id
+ * @param {number} userId - The user's id
+ * @returns {Promise<Date>} - The updated last logged at date
+ */
+async function updateLastLoggedAtByUserId(userId) {
+  const knexcon = DomainTransaction.getConnection();
+  const [updatedUser] = await knexcon(TABLE_NAME)
+    .where({ id: userId })
+    .update({ lastLoggedAt: knexcon.fn.now() }).returning("lastLoggedAt");
+  return updatedUser.lastLoggedAt;
+}
+
+export { createUser, findUserByEmail, findUserById, updateLastLoggedAtByUserId };
