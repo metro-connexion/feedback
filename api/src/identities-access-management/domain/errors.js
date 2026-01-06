@@ -36,15 +36,39 @@ class VerificationFailedError extends DomainError {
   }
 }
 
-// Backward compatibility: keep the ERRORS object for existing code
-const ERRORS = {
-  TOKEN: {
-    REQUIRED: "Token is required",
-    EXPIRED_TOKEN: "Token has expired",
-    INVALID_TOKEN: "Invalid token",
-    VERIFICATION_FAILED: "Token verification failed",
-  },
-};
+/**
+ * Error thrown when user not found
+ */
+class UserNotFoundError extends DomainError {
+  constructor() {
+    super("User not found", 404);
+  }
+}
 
-export default ERRORS;
-export { ExpiredTokenError, InvalidTokenError, RequiredTokenError, VerificationFailedError };
+/**
+ * Error thrown when password is incorrect
+ */
+class IncorrectPasswordError extends DomainError {
+  constructor() {
+    super("Incorrect password", 401);
+  }
+}
+
+/**
+ * Error thrown when authentication method is not found
+ */
+class AuthMethodNotFoundError extends DomainError {
+  constructor() {
+    super("Authentication method not found", 404);
+  }
+}
+
+/**
+ * Error thrown when there is no login authentication method
+ */
+class NoLoginAuthMethodError extends DomainError {
+  constructor() {
+    super("No login authentication method found", 400);
+  }
+}
+export { AuthMethodNotFoundError, ExpiredTokenError, IncorrectPasswordError, InvalidTokenError, NoLoginAuthMethodError, RequiredTokenError, UserNotFoundError, VerificationFailedError };
