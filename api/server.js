@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 
 import { logger } from "./logger.js";
+import { errorHandler } from "./src/shared/api/middlewares/error-handler.js";
 import healthCheckRoute from "./src/shared/api/routes/health-check-route.js";
 
 const server = express();
@@ -17,5 +18,8 @@ server.use((req, res, next) => {
 
 // Define routes here
 server.use(healthCheckRoute);
+
+// Error handler middleware (must be defined after routes)
+server.use(errorHandler);
 
 export default server;
