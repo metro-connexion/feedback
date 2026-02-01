@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 import { config } from "../../../../config.js";
 import { logger } from "../../../../logger.js";
-import ERRORS from "../errors.js";
+import { ExpiredTokenError, InvalidTokenError, VerificationFailedError } from "../errors.js";
 
 const secret = config.jwt.tokenSecret;
 const expirationTime = config.jwt.expirationTime || "1h";
@@ -24,11 +24,11 @@ function decodedToken(token) {
   } catch (error) {
     logger.error(`Token decoding failed ${error}`);
     if (error.name === "TokenExpiredError") {
-      throw new Error(ERRORS.TOKEN.EXPIRED_TOKEN);
+      throw new ExpiredTokenError();
     } else if (error.name === "JsonWebTokenError") {
-      throw new Error(ERRORS.TOKEN.INVALID_TOKEN);
+      throw new InvalidTokenError();
     } else {
-      throw new Error(ERRORS.TOKEN.VERIFICATION_FAILED);
+      throw new VerificationFailedError();
     }
   }
 }

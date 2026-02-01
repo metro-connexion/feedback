@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
 
 import { config } from "../../../../../config.js";
-import ERRORS from "../../../../../src/identities-access-management/domain/errors.js";
+import { ExpiredTokenError, InvalidTokenError } from "../../../../../src/identities-access-management/domain/errors.js";
 import { decodedToken, encodedToken } from "../../../../../src/identities-access-management/domain/services/token-service.js";
 
 describe("Integration | Identities Access Management | Domain | Services | Token service", () => {
@@ -90,54 +90,61 @@ describe("Integration | Identities Access Management | Domain | Services | Token
     });
 
     describe("error cases", () => {
-      it(`should throw an ${ERRORS.TOKEN.EXPIRED_TOKEN}`, () => {
+      it("should throw an ExpiredTokenError", () => {
         // given
         const data = { userId: 1, birthday: "01/01/1970", firstname: "firstname" };
         const expiredTimestamp = Math.floor(Date.now() / 1000) - 1;
         const token = jwt.sign({ ...data, exp: expiredTimestamp }, config.jwt.tokenSecret);
 
         // when & then
-        expect(() => decodedToken(token)).toThrow(ERRORS.TOKEN.EXPIRED_TOKEN);
+        expect(() => decodedToken(token)).toThrow(ExpiredTokenError);
+        expect(() => decodedToken(token)).toThrow("Token has expired");
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN}`, () => {
+      it("should throw an InvalidTokenError", () => {
         // given
         const invalidToken = "invalid.token.here";
 
         // when & then
-        expect(() => decodedToken(invalidToken)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken(invalidToken)).toThrow(InvalidTokenError);
+        expect(() => decodedToken(invalidToken)).toThrow("Invalid token");
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN} for malformed token`, () => {
+      it("should throw an InvalidTokenError for malformed token", () => {
         // given
         const malformedToken = "malformed-token-without-dots";
 
         // when & then
-        expect(() => decodedToken(malformedToken)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken(malformedToken)).toThrow(InvalidTokenError);
+        expect(() => decodedToken(malformedToken)).toThrow("Invalid token");
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN} for token with wrong signature`, () => {
+      it("should throw an InvalidTokenError for token with wrong signature", () => {
         // given
         const data = { userId: 1, firstname: "test" };
         const tokenWithWrongSecret = jwt.sign(data, "wrong-secret", { expiresIn: "1h" });
 
         // when & then
-        expect(() => decodedToken(tokenWithWrongSecret)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken(tokenWithWrongSecret)).toThrow(InvalidTokenError);
+        expect(() => decodedToken(tokenWithWrongSecret)).toThrow("Invalid token");
       });
 
       it("should handle null token in decodedToken", () => {
         // when & then
-        expect(() => decodedToken(null)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken(null)).toThrow(InvalidTokenError);
+        expect(() => decodedToken(null)).toThrow("Invalid token");
       });
 
       it("should handle undefined token in decodedToken", () => {
         // when & then
-        expect(() => decodedToken(undefined)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken(undefined)).toThrow(InvalidTokenError);
+        expect(() => decodedToken(undefined)).toThrow("Invalid token");
       });
 
       it("should handle empty string token in decodedToken", () => {
         // when & then
-        expect(() => decodedToken("")).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
+        expect(() => decodedToken("")).toThrow(InvalidTokenError);
+        expect(() => decodedToken("")).toThrow("Invalid token");
       });
     });
   });
