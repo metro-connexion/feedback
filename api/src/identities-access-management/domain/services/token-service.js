@@ -24,11 +24,11 @@ function decodedToken(token) {
   } catch (error) {
     logger.error(`Token decoding failed ${error}`);
     if (error.name === "TokenExpiredError") {
-      throw new Error(ERRORS.TOKEN.EXPIRED_TOKEN);
+      throw ERRORS.TOKEN.EXPIRED_TOKEN;
     } else if (error.name === "JsonWebTokenError") {
-      throw new Error(ERRORS.TOKEN.INVALID_TOKEN);
+      throw ERRORS.TOKEN.INVALID_TOKEN;
     } else {
-      throw new Error(ERRORS.TOKEN.VERIFICATION_FAILED);
+      throw ERRORS.TOKEN.VERIFICATION_FAILED;
     }
   }
 }

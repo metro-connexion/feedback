@@ -90,7 +90,7 @@ describe("Integration | Identities Access Management | Domain | Services | Token
     });
 
     describe("error cases", () => {
-      it(`should throw an ${ERRORS.TOKEN.EXPIRED_TOKEN}`, () => {
+      it("should throw an expired token error", () => {
         // given
         const data = { userId: 1, birthday: "01/01/1970", firstname: "firstname" };
         const expiredTimestamp = Math.floor(Date.now() / 1000) - 1;
@@ -100,7 +100,7 @@ describe("Integration | Identities Access Management | Domain | Services | Token
         expect(() => decodedToken(token)).toThrow(ERRORS.TOKEN.EXPIRED_TOKEN);
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN}`, () => {
+      it("should throw an invalid token error", () => {
         // given
         const invalidToken = "invalid.token.here";
 
@@ -108,7 +108,7 @@ describe("Integration | Identities Access Management | Domain | Services | Token
         expect(() => decodedToken(invalidToken)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN} for malformed token`, () => {
+      it("should throw an invalid token error for malformed token", () => {
         // given
         const malformedToken = "malformed-token-without-dots";
 
@@ -116,7 +116,7 @@ describe("Integration | Identities Access Management | Domain | Services | Token
         expect(() => decodedToken(malformedToken)).toThrow(ERRORS.TOKEN.INVALID_TOKEN);
       });
 
-      it(`should throw an ${ERRORS.TOKEN.INVALID_TOKEN} for token with wrong signature`, () => {
+      it("should throw an invalid token error for token with wrong signature", () => {
         // given
         const data = { userId: 1, firstname: "test" };
         const tokenWithWrongSecret = jwt.sign(data, "wrong-secret", { expiresIn: "1h" });
