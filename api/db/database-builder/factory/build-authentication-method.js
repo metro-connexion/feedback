@@ -15,9 +15,14 @@ async function buildAuthenticationMethod({
   identityProvider = LOGIN_IDENTITY_PROVIDER,
   userId,
   hashedPassword = null,
+  password = null,
 } = {}) {
   if (identityProvider === LOGIN_IDENTITY_PROVIDER) {
-    hashedPassword = await getDefaultPassword();
+    if (password) {
+      hashedPassword = await generatePassword(password);
+    } else {
+      hashedPassword = await getDefaultPassword();
+    }
   }
   const [authenticationMethod] = await knex("authentication-methods").insert({
     identityProvider,

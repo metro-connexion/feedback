@@ -8,6 +8,7 @@ async function buildUsers({
   username = "john2025",
   userType = USER_TYPES.USER,
   isActive = true,
+  lastLoggedAt = new Date("2023-01-01T00:00:00Z"),
 } = {}) {
   const [user] = await knex("users").insert({
     firstname,
@@ -16,6 +17,7 @@ async function buildUsers({
     username,
     userType,
     isActive,
+    lastLoggedAt,
   }).returning("*");
   return user;
 }

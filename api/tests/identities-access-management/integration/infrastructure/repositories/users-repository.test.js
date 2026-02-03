@@ -119,4 +119,31 @@ describe("Integration | Identities Access Management | Infrastructure | Reposito
       expect(foundUser).toBeNull();
     });
   });
+
+  describe("#updateLastLoggedAtByUserId", () => {
+    it("should update the lastLoggedAt column", async () => {
+      // given
+      const user = await databaseBuilder.factory.buildUsers({ lastLoggedAt: null });
+
+      // when
+      const result = await usersRepository.updateLastLoggedAtByUserId(user.id);
+
+      // then
+      const updatedUserRow = await knex("users").where({ id: user.id }).first();
+      expect(updatedUserRow.last_logged_at).not.toBeNull();
+      expect(updatedUserRow.lastLoggedAt).toBeInstanceOf(Date);
+      expect(updatedUserRow.lastLoggedAt).toEqual(result);
+    });
+
+    it("should throw error if user not found", async () => {
+      // given
+      const nonExistentUserId = 99999;
+
+      // when
+      const result = await usersRepository.updateLastLoggedAtByUserId(nonExistentUserId).catch(e => e);
+
+      // then
+      expect(result).toBeInstanceOf(Error);
+    });
+  });
 });
