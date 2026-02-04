@@ -6,7 +6,6 @@ npm-debug.log
 *.log
 .git
 .gitignore
-README.md
 .vscode
 .idea
 coverage
@@ -16,6 +15,5 @@ build
 tmp
 temp
 *.md
-!README.md
 tests
 vitest.config.js

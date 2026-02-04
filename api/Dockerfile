@@ -1,12 +1,15 @@
 FROM node:24.9.0-alpine
 
+# Install wget for health checks
+RUN apk add --no-cache wget
+
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --production
+RUN npm ci --production
 
 # Copy application files
 COPY . .

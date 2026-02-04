@@ -30,17 +30,17 @@ The docker-compose.yml file defines three services:
 
 3. Start the services:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 4. Run database migrations (first time only):
    ```bash
-   docker-compose exec api npm run db:migrate
+   docker compose exec api npm run db:migrate
    ```
 
 5. (Optional) Seed the database:
    ```bash
-   docker-compose exec api npm run db:seed
+   docker compose exec api npm run db:seed
    ```
 
 ## Accessing the Application
@@ -54,27 +54,27 @@ The docker-compose.yml file defines three services:
 ### View logs
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f api
-docker-compose logs -f web
-docker-compose logs -f postgres
+docker compose logs -f api
+docker compose logs -f web
+docker compose logs -f postgres
 ```
 
 ### Stop services
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Stop and remove volumes (WARNING: This will delete all data)
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Rebuild services
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ## Environment Variables
@@ -103,17 +103,17 @@ You can adjust healthcheck intervals, retries, and `start_period` values in `doc
 ### API cannot connect to database
 Check that the postgres service is healthy:
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### Check service logs
 ```bash
-docker-compose logs api
+docker compose logs api
 ```
 
 ### Access a service shell
 ```bash
-docker-compose exec api sh
-docker-compose exec web sh
-docker-compose exec postgres sh
+docker compose exec api sh
+docker compose exec web sh
+docker compose exec postgres sh
 ```
