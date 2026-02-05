@@ -22,11 +22,12 @@ The docker-compose.yml file defines three services:
    cp sample.env .env
    ```
 
-2. Edit the `.env` file and update the values as needed, especially:
-   - `POSTGRES_PASSWORD`: Set a strong password for the database
-   - `TOKEN_SECRET`: Set a strong secret for JWT tokens
-   - `BASE_URL`: Set the base URL of your application
-   - Configure mailing settings if email functionality is needed
+2. Edit the `.env` file and configure all variables as needed. **All configuration is done through the .env file**, including:
+   - **Database settings**: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DATABASE_PORT`
+   - **API settings**: `API_PORT`, `NODE_ENV`
+   - **Security**: `TOKEN_SECRET` (generate with `openssl rand -base64 32`), `PASSWORD_HASH`
+   - **Application**: `BASE_URL`, `LOG_LEVEL`, etc.
+   - **Email** (if needed): `MAILING_ENABLED`, `MAILING_SERVICE`, etc.
 
 3. Start the services:
    ```bash
