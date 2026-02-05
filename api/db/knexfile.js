@@ -38,6 +38,15 @@ const environments = {
       min: Number.parseInt(env.DATABASE_API_CONNECTION_POOL_MIN_SIZE, 10) || 1,
       max: Number.parseInt(env.DATABASE_API_CONNECTION_POOL_MAX_SIZE, 10) || 1,
     },
+    migrations: {
+      tableName: "knex_migrations",
+      directory: "./migrations",
+      loadExtensions: [".js"],
+    },
+    seeds: {
+      directory: "./seeds",
+      loadExtensions: [".js"],
+    },
     asyncStackTraces: env.KNEX_ASYNC_STACKTRACE_ENABLED_API !== "false",
   },
 };

@@ -1,0 +1,81 @@
+services:
+  postgres:
+    image: postgres:18.1-alpine
+    container_name: feedback-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - feedback-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ../api
+      dockerfile: Dockerfile
+    container_name: feedback-api-prod
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      PORT: ${API_PORT}
+      LOG_ENABLED: ${LOG_ENABLED}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOG_FOR_HUMANS_FORMAT: ${LOG_FOR_HUMANS_FORMAT}
+      DEBUG_ENABLED: ${DEBUG_ENABLED}
+      PASSWORD_HASH: ${PASSWORD_HASH}
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_EXPIRATION: ${TOKEN_EXPIRATION}
+      MAILING_ENABLED: ${MAILING_ENABLED}
+      MAILING_SERVICE: ${MAILING_SERVICE:-}
+      MAILING_SECURE: ${MAILING_SECURE:-}
+      MAILING_PORT: ${MAILING_PORT:-}
+      MAILING_USER: ${MAILING_USER:-}
+      MAILING_PASSWORD: ${MAILING_PASSWORD:-}
+      MAIL_TEST_ACCOUNT_ENABLED: ${MAIL_TEST_ACCOUNT_ENABLED}
+      BASE_URL: ${BASE_URL}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    networks:
+      - feedback-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: feedback-web-prod
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT}:80"
+    networks:
+      - feedback-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  feedback-network:
+    driver: bridge
