@@ -31,8 +31,8 @@ The docker-compose.yml file defines three services:
    - **Database settings**: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DATABASE_PORT`
    - **API settings**: `API_PORT`, `NODE_ENV`
    - **Security**: `TOKEN_SECRET` (generate with `openssl rand -base64 32`), `PASSWORD_HASH`
-   - **Application**: `BASE_URL`, `LOG_LEVEL`, etc.
-   - **Email** (if needed): `MAILING_ENABLED`, `MAILING_SERVICE`, etc.
+   - **Application**: `BASE_URL` (set to your production domain), `LOG_LEVEL`, etc.
+   - **Email** (if needed): `MAILING_ENABLED`, `MAILING_SERVICE`, `MAILING_USER`, `MAILING_PASSWORD`, etc.
    
    ⚠️ **Important**: Never commit the `.env` file to version control!
 
@@ -40,8 +40,10 @@ The docker-compose.yml file defines three services:
    ```bash
    docker compose up -d
    ```
+   
+   **Note**: Database migrations will run automatically when the API container starts.
 
-5(Optional) Seed the database:
+5. (Optional) Seed the database:
    ```bash
    docker compose exec api npm run db:seed
    ```

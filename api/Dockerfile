@@ -14,11 +14,13 @@ RUN npm ci --production
 # Copy application files
 COPY . .
 
-# Run database migrations
-RUN npm run db:migrate
+# Copy and set permissions for entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose the API port
 EXPOSE 3000
 
-# Start the application
+# Use entrypoint to run migrations before starting the app
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "index.js"]
