@@ -133,6 +133,7 @@ describe("Integration | Identities Access Management | Infrastructure | Reposito
       expect(updatedUserRow.last_logged_at).not.toBeNull();
       expect(updatedUserRow.lastLoggedAt).toBeInstanceOf(Date);
       expect(updatedUserRow.lastLoggedAt).toEqual(result);
+      expect(updatedUserRow.updatedAt).not.toBe(user.updatedAt);
     });
 
     it("should throw error if user not found", async () => {
