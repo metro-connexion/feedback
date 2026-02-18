@@ -55,7 +55,7 @@ async function updateLastLoggedAtByUserId(userId) {
   const knexcon = DomainTransaction.getConnection();
   const [updatedUser] = await knexcon(TABLE_NAME)
     .where({ id: userId })
-    .update({ lastLoggedAt: knexcon.fn.now() }).returning("lastLoggedAt");
+    .update({ lastLoggedAt: knexcon.fn.now(), updatedAt: knexcon.fn.now() }).returning("lastLoggedAt");
   return updatedUser.lastLoggedAt;
 }
 
