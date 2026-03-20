@@ -6,7 +6,6 @@ import authenticationRoutes from "./src/identities-access-management/api/routes/
 import userRoutes from "./src/identities-access-management/api/routes/user-routes.js";
 import { errorHandler } from "./src/shared/api/middlewares/error-handler.js";
 import healthCheckRoute from "./src/shared/api/routes/health-check-route.js";
-import swaggerRoute from "./swagger.js";
 
 const server = express();
 server.use(cors());
@@ -20,10 +19,6 @@ server.use((req, res, next) => {
 });
 
 // Define routes here
-// swagger
-server.use(swaggerRoute);
-
-// Health route
 server.use(healthCheckRoute);
 
 // Authentication
