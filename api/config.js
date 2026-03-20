@@ -1,4 +1,9 @@
 import "dotenv/config";
+
+import { readFileSync } from "node:fs";
+
+import { fileURLToPath } from "url";
+
 /**
  * Parses a string to a number with a default fallback
  * @param {string} numberAsString - The string to parse as a number
@@ -21,7 +26,26 @@ function toBoolean(value) {
   return value.toLowerCase() === "true";
 }
 
+/**
+ * Reads and parses the package.json file to retrieve project metadata
+ * @returns {{}|any} - An object containing the package.json data or an empty object if an error occurs
+ */
+function getPkg() {
+  try {
+    const pkgPath = fileURLToPath(
+      new URL("./package.json", import.meta.url),
+    );
+
+    const pkg = readFileSync(pkgPath, "utf-8");
+    return JSON.parse(pkg);
+  } catch (error) {
+    console.error("Error reading package.json:", error);
+    return {};
+  }
+}
+
 const configuration = (function() {
+  const pkg = getPkg();
   const config = {
     port: _getNumber(process.env.PORT, 3000),
     environment: process.env.NODE_ENV || "development",
@@ -55,9 +79,9 @@ const configuration = (function() {
       definition: {
         openapi: "3.0.0",
         info: {
-          title: "Api Kompagnon",
-          version: "0.0.0",
-          description: "The api for Kompagnon platform",
+          title: pkg.name,
+          version: pkg.version,
+          description: pkg.description,
         },
         servers: [
           {
