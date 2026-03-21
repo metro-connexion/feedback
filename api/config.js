@@ -88,8 +88,53 @@ const configuration = (function() {
             url: `http://localhost:${process.env.PORT || 3000}`,
           },
         ],
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT",
+              description: "JWT access token obtained from POST /api/authentication/authenticate/token",
+            },
+          },
+          schemas: {
+            Error: {
+              type: "object",
+              properties: {
+                error: {
+                  type: "string",
+                  description: "Error message",
+                  example: "User not found",
+                },
+              },
+            },
+            ValidationError: {
+              type: "object",
+              properties: {
+                error: {
+                  type: "string",
+                  example: "Validation failed",
+                },
+                details: {
+                  type: "object",
+                  additionalProperties: {
+                    type: "object",
+                    properties: {
+                      source: { type: "string" },
+                      keys: {
+                        type: "array",
+                        items: { type: "string" },
+                      },
+                      message: { type: "string" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
-      apis: ["./src/**/*routes*.js"],
+      apis: ["./src/**/*route*.js"],
     },
   };
 
