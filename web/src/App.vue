@@ -1,5 +1,6 @@
 <script setup>
 import { onBeforeMount, ref } from "vue";
+import { RouterView } from "vue-router";
 
 import { apiCheck } from "@/adapters/api-check.js";
 import FooterComponent from "@/components/FooterComponent.vue";
@@ -13,15 +14,7 @@ onBeforeMount(async () => {
 
 <template>
   <div v-if="apiIsAvailable">
-    <h1>You did it!</h1>
-    <p>
-      Visit <a
-        href="https://vuejs.org/"
-        target="_blank"
-        rel="noopener"
-      >vuejs.org</a> to read the
-      documentation
-    </p>
+    <RouterView />
     <FooterComponent />
   </div>
 </template>
