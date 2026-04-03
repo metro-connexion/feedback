@@ -1,6 +1,8 @@
 import express from "express";
 
 import { authenticateWithLogin } from "../controllers/authentication-controller.js";
+import { authorizeCliLoginController } from "../controllers/cli-authentication-controller.js";
+import { getUserTokenInfoMiddleware } from "../middlewares/get-user-token-info-middleware.js";
 import { authenticateLoginSchema } from "../validation/authenticate-login-schema.js";
 
 const authenticationRoutes = express.Router();
@@ -115,4 +117,64 @@ const authenticationRoutes = express.Router();
  */
 authenticationRoutes.post("/authenticate/token", authenticateLoginSchema, authenticateWithLogin);
 
+/**
+ * @swagger
+ * /api/authentication/cli/authorize:
+ *   post:
+ *     summary: Authorize CLI access for the authenticated user
+ *     description: |
+ *       Generates a JWT token for CLI use. The request must include a valid JWT Bearer token
+ *       obtained from the browser-based login flow. Returns a signed JWT token that the CLI
+ *       can store and use for subsequent authenticated requests.
+ *     tags:
+ *       - Authentication
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *           pattern: '^Bearer .+'
+ *         description: JWT Bearer token. Format: `Bearer <token>`
+ *     responses:
+ *       200:
+ *         description: CLI token generated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     type:
+ *                       type: string
+ *                       example: cli-authentication
+ *                     attributes:
+ *                       type: object
+ *                       properties:
+ *                         token:
+ *                           type: string
+ *                           description: Signed JWT access token for CLI use.
+ *                           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQyfQ.signature
+ *       401:
+ *         description: The Authorization header is missing, expired, or invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Unexpected server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *             example:
+ *               error: Internal server error
+ */
+authenticationRoutes.post("/cli/authorize", getUserTokenInfoMiddleware, authorizeCliLoginController);
+
 export default authenticationRoutes;
+

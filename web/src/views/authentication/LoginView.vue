@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import { authenticate } from "@/adapters/authentication.js";
 import { getUser } from "@/adapters/user.js";
 import PasswordInputComponent from "@/components/PasswordInputComponent.vue";
 import { useAuthStore } from "@/stores/auth.js";
 
+const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -42,7 +43,12 @@ async function handleSubmit() {
       userLastname: user.lastname,
       userEmail: email.value,
     });
-    router.push("/accueil");
+    const redirect = route.query.redirect;
+    if (redirect) {
+      router.push(redirect);
+    } else {
+      router.push("/accueil");
+    }
   } catch (error) {
     switch (error.message) {
     case "User not found":

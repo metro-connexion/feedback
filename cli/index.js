@@ -1,10 +1,12 @@
 import { createHealthCommand } from "./commands/health-command.js";
+import { createLoginCommand } from "./commands/login-command.js";
 import { createProgram } from "./program.js";
 
 export function buildProgram() {
   const program = createProgram();
 
   program.addCommand(createHealthCommand());
+  program.addCommand(createLoginCommand());
 
   return program;
 }

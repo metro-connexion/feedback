@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useAuthStore } from "@/stores/auth.js";
+import CliLoginView from "@/views/authentication/CliLoginView.vue";
 import LoginView from "@/views/authentication/LoginView.vue";
 import HomeView from "@/views/HomeView.vue";
 
@@ -15,6 +16,11 @@ const router = createRouter({
       path: "/authentication/login",
       name: "login",
       component: LoginView,
+    },
+    {
+      path: "/authentication/cli-login",
+      name: "cli-login",
+      component: CliLoginView,
     },
     {
       path: "/accueil",
