@@ -22,11 +22,12 @@ async function loginHandler({
   setTokenService = setToken,
 }) {
   const state = randomUUID();
+  const spinner = oraService("Ouverture du navigateur...");
 
-  return new Promise((resolve, reject) => {
-    const spinner = oraService("Ouverture du navigateur...");
+  return new Promise(function(resolve, reject) {
+    let settled = false;
 
-    const server = createServer((req, res) => {
+    const server = createServer(function(req, res) {
       const reqUrl = new URL(req.url, "http://localhost");
 
       if (reqUrl.pathname !== "/cli-callback") {
@@ -43,7 +44,10 @@ async function loginHandler({
         res.end("<h1>Erreur : état invalide.</h1>");
         server.close();
         spinner.fail("Échec de la connexion : état invalide.");
-        reject(new Error("Invalid state"));
+        if (!settled) {
+          settled = true;
+          reject(new Error("Invalid state"));
+        }
         return;
       }
 
@@ -52,7 +56,10 @@ async function loginHandler({
         res.end("<h1>Erreur : token manquant.</h1>");
         server.close();
         spinner.fail("Échec de la connexion : token manquant.");
-        reject(new Error("Missing token"));
+        if (!settled) {
+          settled = true;
+          reject(new Error("Missing token"));
+        }
         return;
       }
 
@@ -61,16 +68,22 @@ async function loginHandler({
       res.end("<h1>Connexion réussie !</h1><p>Vous pouvez fermer cet onglet et retourner dans le terminal.</p>");
       server.close();
       spinner.succeed("Connexion réussie !");
-      resolve();
+      if (!settled) {
+        settled = true;
+        resolve();
+      }
     });
 
-    const timeout = setTimeout(() => {
+    const timeout = setTimeout(function() {
       server.close();
       spinner.fail("Délai d'attente dépassé. Veuillez réessayer.");
-      reject(new Error("Login timeout"));
+      if (!settled) {
+        settled = true;
+        reject(new Error("Login timeout"));
+      }
     }, LOGIN_TIMEOUT_MS);
 
-    server.listen(0, "localhost", () => {
+    server.listen(0, "localhost", function() {
       const { port } = server.address();
       const callbackUrl = `http://localhost:${port}/cli-callback`;
       const loginUrl = `${url}/authentication/cli-login?state=${state}&callbackUrl=${encodeURIComponent(callbackUrl)}`;
@@ -79,14 +92,17 @@ async function loginHandler({
       spinner.text = "En attente de l'autorisation dans le navigateur...";
     });
 
-    server.on("close", () => {
+    server.on("close", function() {
       clearTimeout(timeout);
     });
 
-    server.on("error", (error) => {
+    server.on("error", function(error) {
       clearTimeout(timeout);
       spinner.fail("Erreur lors de la connexion.");
-      reject(error);
+      if (!settled) {
+        settled = true;
+        reject(error);
+      }
     });
   });
 }

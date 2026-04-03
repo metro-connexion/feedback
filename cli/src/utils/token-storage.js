@@ -52,6 +52,7 @@ function setToken(token) {
  */
 function clearToken() {
   const config = readConfig();
+  if (!Object.prototype.hasOwnProperty.call(config, "token")) return;
   delete config.token;
   writeConfig(config);
 }
