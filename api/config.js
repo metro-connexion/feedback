@@ -74,6 +74,12 @@ const configuration = (function() {
         pass: process.env.MAILING_PASSWORD,
       },
     },
+    mailPit: {
+      enabled: toBoolean(process.env.MAILING_MAILPIT_ENABLED),
+      port: _getNumber(process.env.MAILING_MAILPIT_PORT, 1025),
+      secure: false,
+      host: "localhost",
+    },
     baseUrl: process.env.BASE_URL,
     swagger: {
       definition: {
@@ -146,6 +152,8 @@ const configuration = (function() {
     config.email.enabled = false;
     config.email.testAccount = false;
     config.baseUrl = "http://localhost/#/";
+  } else if (config.mailPit.enabled) {
+    config.email = config.mailPit;
   }
   return config;
 })();

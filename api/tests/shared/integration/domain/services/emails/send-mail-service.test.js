@@ -7,28 +7,14 @@ import { sendMailService } from "../../../../../../src/shared/domain/services/em
 
 vi.mock("../../../../../../logger.js");
 
-describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => {
+describe("Integration | Shared | Services | Email | Send Mail", () => {
   beforeEach(() => {
     config.logging.enabled = true;
     config.email.enabled = true;
-    config.email.testAccount = true;
-    vi.spyOn(logger, "info");
-  });
-
-  it("should send email and log url to visualize", async () => {
-    // given
-    const req = {
-      to: "john.doe@example.net",
-      subject: "The subject",
-      text: "This is the text",
-    };
-
-    // when
-    const result = await sendMailService(req);
-
-    // then
-    const url = nodemailer.getTestMessageUrl(result);
-    expect(logger.info).toHaveBeenCalledWith(`Email available on ${url}`);
+    config.email.host = "localhost";
+    config.email.port = 1025;
+    config.email.secure = false;
+    config.email.auth = { user: undefined, pass: undefined };
   });
 
   describe("when email is disabled", () => {
@@ -50,13 +36,65 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
 
       // then
       const expectedMailOptions = {
-        from: config.email.auth.user,
+        from: "no-reply@example.com",
         to: "john.doe@example.net",
         subject: "Test Subject",
         text: "Test content",
       };
-      expect(logger.info).toHaveBeenCalledWith(
-        `Email disabled. Mail not sent. Mail info: ${JSON.stringify(expectedMailOptions)}`,
+      expect(logger.info).toHaveBeenCalledWith({ mailOptions: expectedMailOptions },
+        "Email disabled. Mail not sent. Mail info",
+      );
+    });
+  });
+
+  describe("with Mailpit-style configuration (no auth)", () => {
+    beforeEach(() => {
+      config.email.enabled = true;
+      config.email.host = "localhost";
+      config.email.port = 1025;
+      config.email.secure = false;
+      config.email.auth = { user: undefined, pass: undefined };
+    });
+
+    it("should create a transporter without auth", async () => {
+      // given
+      const sendMail = vi.fn().mockResolvedValue({ messageId: "test-id" });
+      vi.spyOn(nodemailer, "createTransport").mockReturnValue({ sendMail });
+
+      const req = {
+        to: "john.doe@example.net",
+        subject: "Mailpit Test",
+        text: "Mailpit content",
+      };
+
+      // when
+      await sendMailService(req);
+
+      // then
+      expect(nodemailer.createTransport).toHaveBeenCalledWith({
+        host: "localhost",
+        port: 1025,
+        secure: false,
+      });
+    });
+
+    it("should use a default from address when no auth user is configured", async () => {
+      // given
+      const sendMail = vi.fn().mockResolvedValue({ messageId: "test-id" });
+      vi.spyOn(nodemailer, "createTransport").mockReturnValue({ sendMail });
+
+      const req = {
+        to: "john.doe@example.net",
+        subject: "Mailpit Test",
+        text: "Mailpit content",
+      };
+
+      // when
+      await sendMailService(req);
+
+      // then
+      expect(sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({ from: "no-reply@example.com" }),
       );
     });
   });
@@ -64,8 +102,7 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
   describe("with production email configuration", () => {
     beforeEach(() => {
       config.email.enabled = true;
-      config.email.testAccount = false;
-      config.email.service = "gmail";
+      config.email.host = "smtp.gmail.com";
       config.email.port = 587;
       config.email.secure = false;
       config.email.auth = {
@@ -74,11 +111,10 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
       };
     });
 
-    it("should create transporter with production config when testAccount is false", async () => {
+    it("should create transporter with auth when credentials are provided", async () => {
       // given
-      vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-        sendMail: vi.fn().mockResolvedValue({ messageId: "test-id" }),
-      });
+      const sendMail = vi.fn().mockResolvedValue({ messageId: "test-id" });
+      vi.spyOn(nodemailer, "createTransport").mockReturnValue({ sendMail });
 
       const req = {
         to: "john.doe@example.net",
@@ -91,7 +127,7 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
 
       // then
       expect(nodemailer.createTransport).toHaveBeenCalledWith({
-        service: "gmail",
+        host: "smtp.gmail.com",
         port: 587,
         secure: false,
         auth: {
@@ -101,12 +137,10 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
       });
     });
 
-    it("should not log test URL when using production config", async () => {
+    it("should use auth user as the from address", async () => {
       // given
-      vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-        sendMail: vi.fn().mockResolvedValue({ messageId: "test-id" }),
-      });
-      vi.spyOn(logger, "info");
+      const sendMail = vi.fn().mockResolvedValue({ messageId: "test-id" });
+      vi.spyOn(nodemailer, "createTransport").mockReturnValue({ sendMail });
 
       const req = {
         to: "john.doe@example.net",
@@ -118,8 +152,8 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
       await sendMailService(req);
 
       // then
-      expect(logger.info).not.toHaveBeenCalledWith(
-        expect.stringContaining("Email available on"),
+      expect(sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({ from: "prod@example.com" }),
       );
     });
   });
@@ -127,17 +161,16 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
   describe("error logging", () => {
     beforeEach(() => {
       config.email.enabled = true;
-      config.email.testAccount = true;
+      config.email.host = "localhost";
+      config.email.port = 1025;
+      config.email.secure = false;
+      config.email.auth = { user: undefined, pass: undefined };
       vi.spyOn(logger, "error");
     });
 
     it("should log error when sendMail fails", async () => {
       // given
       const error = new Error("SMTP server not responding");
-      vi.spyOn(nodemailer, "createTestAccount").mockResolvedValue({
-        user: "test@ethereal.email",
-        pass: "testpass",
-      });
       vi.spyOn(nodemailer, "createTransport").mockReturnValue({
         sendMail: vi.fn().mockRejectedValue(error),
       });
@@ -149,68 +182,10 @@ describe("Integration | Shared | Domain | Services | Emails | Send Mail", () => 
       };
 
       // when
-      try {
-        await sendMailService(req);
-      } catch {
-        // Expected error
-      }
+      await expect(sendMailService(req)).rejects.toBe(error);
 
       // then
-      expect(logger.error).toHaveBeenCalledWith(`Error sending email: ${error}`);
-    });
-  });
-
-  describe("createTestAccount integration", () => {
-    beforeEach(() => {
-      config.email.enabled = true;
-      config.email.testAccount = true;
-    });
-
-    it("should handle createTestAccount failure", async () => {
-      // given
-      const testAccountError = new Error("Failed to create test account");
-      vi.spyOn(nodemailer, "createTestAccount").mockRejectedValue(testAccountError);
-
-      const req = {
-        to: "john.doe@example.net",
-        subject: "Test Subject",
-        text: "Test content",
-      };
-
-      // when & then
-      await expect(sendMailService(req)).rejects.toBe(testAccountError);
-    });
-
-    it("should use test account credentials when testAccount is enabled", async () => {
-      // given
-      const testAccount = {
-        user: "test.user@ethereal.email",
-        pass: "test.password",
-      };
-      vi.spyOn(nodemailer, "createTestAccount").mockResolvedValue(testAccount);
-      vi.spyOn(nodemailer, "createTransport").mockReturnValue({
-        sendMail: vi.fn().mockResolvedValue({ messageId: "test-message-id" }),
-      });
-
-      const req = {
-        to: "john.doe@example.net",
-        subject: "Test Subject",
-        text: "Test content",
-      };
-
-      // when
-      await sendMailService(req);
-
-      // then
-      expect(nodemailer.createTransport).toHaveBeenCalledWith({
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
+      expect(logger.error).toHaveBeenCalledWith({ err: error }, "Error sending email");
     });
   });
 });

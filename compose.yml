@@ -8,3 +8,12 @@ services:
       - ./api/.env
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: feedback-mailpit
+    ports:
+      - "8025:8025" # Web UI
+      - '${MAILING_MAILPIT_PORT:-1025}:1025' # SMTP
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8025 || exit 1" ]
